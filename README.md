@@ -11,7 +11,6 @@ New & Removed Features
 - - Port/Host prompts
 - + host meta
 - + port meta
-- + Uses arg for template, or prompts if not
 
 
 OLD README CONTENTS:
