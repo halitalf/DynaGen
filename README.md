@@ -1,4 +1,20 @@
-OpenVPN-Config-Generator
+DynaGen
+========================
+The rewrite of OpenVPN-Config-Generator to be more extensive and requiring less interaction, making it more useful in automation.
+The old code had become no longer usable, due to changes in pyOpenSSL. It had not been updated in a little over a year, so I took it upon myself to fix and update it.
+
+New & Removed Features
+------------------------
+- - savecerts meta
+- + Saves server cert/key under specific name to avoid changes on new client creation
+- + Saves certificate authority cert/key under specific name to avoid changes on new client creation
+- - Port/Host prompts
+- + host meta
+- + port meta
+- + Uses arg for template, or prompts if not
+
+
+OLD README CONTENTS:
 ========================
 OpenVPN-Config-Generator is made to help automate the process of creating OpenVPN configurations.
 
