@@ -16,21 +16,23 @@ if sys.version_info[:1] == (2,):
     input = raw_input
 
 DIR_CNF     = '/etc/openvpn/'
-DIR_TMPL    = DIR_CNF+'gen/templates/'
+DIR_TMPL    = DIR_CNF+'templates/'
 DIR_CLI     = DIR_CNF+'clients/'
-DIR_KEY     = DIR_CNF+'keys'
+DIR_KEY     = DIR_CNF+'keys/'
 
 FILE_CACRT  = DIR_KEY+'ca.crt'
 FILE_CAKEY  = DIR_KEY+'ca.key'
 FILE_SRVCRT = DIR_KEY+'server.crt'
 FILE_SRVKEY = DIR_KEY+'server.key'
 FILE_DHPEM  = DIR_KEY+'dh.pem'
+FILE_TAPEM  = DIR_KEY+'ta.pem'
 FILE_SRVCNF = DIR_CNF+'server.conf'
 FILE_CLIKEY = DIR_CLI+'null.key'
 FILE_CLICRT = DIR_CLI+'null.crt'
 FILE_CLICNF = "null"
 
 WAIT_CONT = 0.8
+PROG_VER  = '0.0.1.2'
 
 null = open('/dev/null','w')
 
@@ -40,6 +42,8 @@ def clear():
     """
     if os.isatty(sys.stdin.fileno()):
         os.system('clear')
+    else:
+        print('\n-------\n')
 
 def sigint_handle(signal, frame):
     clear()
@@ -195,17 +199,23 @@ def gen_dhparams(size=4096):
 
 def gen_tlsauth_key():
     """Generate an openvpn secret key by calling openvpn. Returns a string."""
-    if not os.path.isfile(DIR_CNF+'ta.pem'):
+    if not os.path.isfile(FILE_TAPEM):
         print('Generating TLS Auth Key...')
         start = time.time()
-        cmd = ['openvpn', '--genkey', '--secret', DIR_CNF+'ta.pem']
+        cmd = ['openvpn', '--genkey', '--secret', FILE_TAPEM]
         ret = subprocess.check_call(cmd, stdout=null, stderr=null)
         end = time.time()
         print('Took '+str(end - start)+' seconds')
         time.sleep(WAIT_CONT)
 
-    with open(DIR_CNF+'ta.pem') as key:
+    clear()
+    print('Loading TLS Auth Key...')
+    start = time.time()
+    with open(FILE_TAPEM) as key:
         key = key.read()
+    end = time.time()
+    print('Took '+str(end - start)+' seconds')
+    time.sleep(WAIT_CONT)
     return key
 
 def _create_server_conf(name, confdict, port, cacert, serverkey, servercert, tls_auth=True):
@@ -323,18 +333,29 @@ def create_confs(name, confdict):
 
     # Create CA
     if os.path.isfile(FILE_CACRT) and os.path.isfile(FILE_CAKEY):
+        clear()
+        print('Loading authority certificate and key...')
+        start = time.time()
         cacert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, open(FILE_CACRT, 'rt').read())
         cakey = OpenSSL.crypto.load_privatekey(OpenSSL.crypto.FILETYPE_PEM, open(FILE_CAKEY,'rt').read())
+        end = time.time()
+        print('Took '+str(end - start)+' seconds')
+        time.sleep(WAIT_CONT)
     else:
         cacert, cakey = create_ca()
-
     text_cacert = OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, cacert).decode('ascii')
     text_cakey = OpenSSL.crypto.dump_privatekey(OpenSSL.crypto.FILETYPE_PEM, cakey).decode('ascii')
 
     # Create a server
     if os.path.isfile(FILE_SRVCRT) and os.path.isfile(FILE_SRVKEY):
+        clear()
+        print('Loading server certificate and key...')
+        start = time.time()
         servercert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, open(FILE_SRVCRT, 'rt').read())
         serverkey = OpenSSL.crypto.load_privatekey(OpenSSL.crypto.FILETYPE_PEM, open(FILE_SRVKEY,'rt').read())
+        end = time.time()
+        print('Took '+str(end - start)+' seconds')
+        time.sleep(WAIT_CONT)
     else:
         servercert, serverkey = create_cert(True, cacert, cakey)
 
@@ -415,6 +436,8 @@ def _ask_template(templates,ret=None):
                     return template
 def main():
     clear()
+    print('Loading DynaGen '+PROG_VER+'...')
+    time.sleep(WAIT_CONT)
     args = _parse_args()
 
     # Read in configs
