@@ -2,9 +2,10 @@
     "meta": {
         "name": "LAN Games",
         "description": "A basic setup for playing LAN games",
-        "savecerts": false,
         "embedkeys": true,
-        "tls-auth": true
+        "tls-auth": true,
+        "host": "localhost",
+        "port": "1194"
     },
     "both": {
         "dev": "tap",

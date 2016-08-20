@@ -2,9 +2,10 @@
     "meta": {
         "name": "Basic",
         "description": "A basic setup, good for internet browsing",
-        "savecerts": false,
         "embedkeys": true,
-        "tls-auth": true
+        "tls-auth": true,
+        "host": "localhost",
+        "port": "1194"
     },
     "both": {
         "dev": "tun",
