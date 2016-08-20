@@ -1,7 +1,7 @@
 DynaGen
 ========================
 The rewrite of OpenVPN-Config-Generator to be more extensive and requiring less interaction, making it more useful in automation.
-The old code had become no longer usable, due to changes in pyOpenSSL. It had not been updated in a little over a year, so I took it upon myself to fix and update it.
+~~The old code had become no longer usable, due to changes in pyOpenSSL. It had not been updated in a little over a year, so I took it upon myself to fix and update it.~~ This was fixed due to my bug report prior to fork. Regardless, I made my own improvements to the code to better suit my needs, and hopefully others.
 
 New & Removed Features
 ------------------------
